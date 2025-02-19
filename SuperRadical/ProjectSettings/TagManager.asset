@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Arrow
+  - Activator
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - UI
   - Wall
   - Rail
-  - 
+  - PhysicsUI
   - 
   - 
   - 
