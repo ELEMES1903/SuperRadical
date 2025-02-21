@@ -5,12 +5,24 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class GravityBody : MonoBehaviour
 {
-    private static float GRAVITY_FORCE = 800;
+    public static float GRAVITY_FORCE = 25;
     
+    private Vector3 overrideGravityDirection = Vector3.zero;
+    private bool overrideGravity = false;
+    public bool useOverrideGravity = true; // Toggle override gravity usage
+
+    public void SetGravityDirection(Vector3 newDirection, bool overrideGravity)
+    {
+        this.overrideGravity = overrideGravity;
+        overrideGravityDirection = newDirection.normalized;
+        _rigidbody.WakeUp();
+    }
+
     public Vector3 GravityDirection
     {
         get
         {
+            if (useOverrideGravity && overrideGravity) return overrideGravityDirection;
             if (_gravityAreas.Count == 0) return Vector3.zero;
             _gravityAreas.Sort((area1, area2) => area1.Priority.CompareTo(area2.Priority));
             return _gravityAreas.Last().GetGravityDirection(this).normalized;
@@ -29,7 +41,8 @@ public class GravityBody : MonoBehaviour
         void FixedUpdate()
     {
         // Apply gravity force
-        _rigidbody.AddForce(GravityDirection * (GRAVITY_FORCE * Time.fixedDeltaTime), ForceMode.Acceleration);
+        _rigidbody.AddForce(GravityDirection * (GRAVITY_FORCE * Time.fixedDeltaTime), ForceMode.VelocityChange);
+
 
         // Calculate new rotation to align with gravity direction
         Vector3 gravityUp = -GravityDirection; // Up direction relative to gravity
